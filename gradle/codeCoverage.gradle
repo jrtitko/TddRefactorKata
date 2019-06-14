@@ -1,0 +1,20 @@
+//apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.3"
+    reportsDir = file("$buildDir/reports/jacoco")   // This is the default and is here for demo
+}
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                     exclude: [
+                        '**/*Application.class'
+            ])
+        }))
+    }
+}
+
+test.finalizedBy jacocoTestReport
+jacocoTestReport.dependsOn check

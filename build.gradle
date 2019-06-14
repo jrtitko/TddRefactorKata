@@ -1,0 +1,46 @@
+plugins {
+    id 'org.springframework.boot' version '2.1.5.RELEASE'
+    id "org.unbroken-dome.test-sets" version "2.1.1"
+    id "jacoco"
+    id 'groovy'
+}
+
+apply plugin: 'io.spring.dependency-management'
+apply from: 'gradle/integrationTest.gradle'
+apply from: 'gradle/codeCoverage.gradle'
+
+group = 'com.industrousgnomes'
+version = '1.0'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-cassandra'
+    implementation('com.datastax.cassandra:cassandra-driver-mapping:3.3.0')
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // mandatory dependencies for using Spock
+    implementation "org.codehaus.groovy:groovy-all:2.5.5"
+    testImplementation "org.spockframework:spock-core:1.2-groovy-2.5"
+    testImplementation "org.spockframework:spock-spring:1.2-groovy-2.5"  // required to use spring
+
+    // optional dependencies for using Spock
+    testCompile "org.hamcrest:hamcrest-core:2.1" // only necessary if Hamcrest matchers are used
+    testRuntime "net.bytebuddy:byte-buddy:1.9.6"          // allows mocking of classes (in addition to interfaces)
+    testRuntime "org.objenesis:objenesis:3.0.1"    // allows mocking of classes without default constructor (together with CGLIB)
+}

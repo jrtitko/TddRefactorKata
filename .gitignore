@@ -1,0 +1,35 @@
+.DS_Store
+
+# Java Files
+myRetail/target/
+*.jar
+*.war
+*.ear
+*.class
+hs_err_pid*
+
+# IntelliJ Files
+.idea/
+*.iml
+
+# Gradle Files
+.gradle/
+build/
+# Gradle Files should normally be ignored.  New repos will need this once
+# Use: git add --force gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/
+!gradle-wrapper.jar
+
+# Test Files
+coverage-report/
+
+# Temporary files
+*~
+RemoteSystemsTempFiles/
+out/
+
+# Utility scripts
+copy.sh
+
+# Unknown numbers
+0
