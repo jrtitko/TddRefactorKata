@@ -42,7 +42,7 @@ public class DataPortal {
         // we can derive keyspaces, tables, and columns from this single table
         HashMap<String, HashMap> schemaInfo = new HashMap<String, HashMap>();
 
-        if (datasourceName.equals("cassandraV2")) {
+        if ("cassandraV2".equals(datasourceName)) {
             cassandraConnector.connect();
             Session session = cassandraConnector.getSession();
 
@@ -72,7 +72,7 @@ public class DataPortal {
 
             cassandraConnector.close();
 
-        } else if (datasourceName.equals("cassandraV3")) {
+        } else if ("cassandraV3".equals(datasourceName)) {
             cassandraConnector.connect();
             Session session = cassandraConnector.getSession();
 
