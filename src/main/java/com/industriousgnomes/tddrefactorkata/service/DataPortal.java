@@ -61,14 +61,9 @@ public class DataPortal {
                 String table_name = r.getColumnfamily_name();
                 String column_name = r.getColumn_name();
                 String column_type = r.getValidator();
-
-                //create structures for keyspace and table if required
-                schemaInfo.putIfAbsent(keyspace_name, new HashMap<>());
-                Map<String, Map<String, String>> keyspace_map = schemaInfo.get(keyspace_name);
-                keyspace_map.putIfAbsent(table_name, new HashMap<>());
-                Map<String, String> table_map = keyspace_map.get(table_name);
                 String cleaned_column_type = column_type.replaceAll("org.apache.cassandra.db.marshal.", "");
-                table_map.put(column_name, cleaned_column_type);
+
+                putSchemaInfoInMap(schemaInfo, keyspace_name, table_name, column_name, cleaned_column_type);
             });
 
             cassandraConnector.close();
@@ -92,12 +87,7 @@ public class DataPortal {
                 String column_name = r.getColumn_name();
                 String column_type = r.getType();
 
-                //create structures for keyspace and table if required
-                schemaInfo.putIfAbsent(keyspace_name, new HashMap<>());
-                Map<String, Map<String, String>> keyspace_map = schemaInfo.get(keyspace_name);
-                keyspace_map.putIfAbsent(table_name, new HashMap<>());
-                Map<String, String> table_map = keyspace_map.get(table_name);
-                table_map.put(column_name, column_type);
+                putSchemaInfoInMap(schemaInfo, keyspace_name, table_name, column_name, column_type);
             });
 
             cassandraConnector.close();
@@ -134,6 +124,14 @@ public class DataPortal {
         } catch (Exception e) {
             logger.error(e.toString());
         }
+    }
+
+    private void putSchemaInfoInMap(Map<String, Map<String, Map<String, String>>> schemaInfo, String keyspaceName, String tableName, String columnName, String columnType) {
+        schemaInfo.putIfAbsent(keyspaceName, new HashMap<>());
+        Map<String, Map<String, String>> keyspace_map = schemaInfo.get(keyspaceName);
+        keyspace_map.putIfAbsent(tableName, new HashMap<>());
+        Map<String, String> table_map = keyspace_map.get(tableName);
+        table_map.put(columnName, columnType);
     }
 }
 
