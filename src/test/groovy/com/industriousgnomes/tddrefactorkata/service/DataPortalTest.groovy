@@ -1,7 +1,8 @@
 package com.industriousgnomes.tddrefactorkata.service
 
-import com.industriousgnomes.tddrefactorkata.exceptions.InvalidSourceException
+
 import com.industriousgnomes.tddrefactorkata.cassandra.CassandraConnector
+import com.industriousgnomes.tddrefactorkata.exceptions.InvalidSourceException
 import com.industriousgnomes.tddrefactorkata.mongo.MongoConnector
 import spock.lang.Specification
 import spock.lang.Subject

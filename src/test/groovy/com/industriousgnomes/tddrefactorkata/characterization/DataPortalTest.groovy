@@ -104,23 +104,4 @@ class DataPortalTest extends Specification {
             documents.size() == 1
             documents.first().containsKey("system_auth")
     }
-
-    def "run copyDataOver against something else"() {
-        given:
-            System.setProperty("cassandra.cluster", "localhost");
-            System.setProperty("cassandra.port", "9042");
-            System.setProperty("cassandra.user", "someuser");
-            System.setProperty("cassandra.password", "somepassword");
-            System.setProperty("cassandra.column_table", "unknown");
-
-            System.setProperty("dataportal.keyspace", "system_auth")
-
-            setupWiring()
-
-        when:
-            dataPortal.copyDataOver()
-
-        then:
-            false
-    }
 }
