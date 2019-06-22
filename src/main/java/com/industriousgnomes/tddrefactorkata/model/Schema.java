@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 @Builder
 public class Schema {
-    private String keyspace_name;
-    private String table_name;
-    private String column_name;
-    private String column_type;
+    private String keyspaceName;
+    private String tableName;
+    private String columnName;
+    private String columnType;
 }
