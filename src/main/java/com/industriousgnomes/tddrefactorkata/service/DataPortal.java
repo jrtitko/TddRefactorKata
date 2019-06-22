@@ -25,6 +25,9 @@ public class DataPortal {
     @Autowired
     MongoConnector mongoConnector;
 
+    @Autowired
+    CassandraConnector cassandraConnector;
+
     public void copyDataOver() {
 
         // Logger
@@ -35,7 +38,6 @@ public class DataPortal {
         String keyspace = System.getProperty("dataportal.keyspace");
 
         // Setup Cassandra Connection
-        CassandraConnector cassandraConnector = new CassandraConnector();
         cassandraConnector.connect();
         Session session = cassandraConnector.getSession();
 
