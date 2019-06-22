@@ -10,6 +10,7 @@ import com.industriousgnomes.tddrefactorkata.cassandra.CassandraConnector;
 import com.industriousgnomes.tddrefactorkata.cassandra.dto.v2.SchemaColumn;
 import com.industriousgnomes.tddrefactorkata.cassandra.dto.v3.Column;
 import com.industriousgnomes.tddrefactorkata.exceptions.InvalidSourceException;
+import com.industriousgnomes.tddrefactorkata.model.Schema;
 import com.industriousgnomes.tddrefactorkata.mongo.MongoConnector;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
@@ -57,13 +58,18 @@ public class DataPortal {
 
             // fetch and store schema info
             rows.forEach(r -> {
-                String keyspace_name = r.getKeyspace_name();
-                String table_name = r.getColumnfamily_name();
-                String column_name = r.getColumn_name();
-                String column_type = r.getValidator();
-                String cleaned_column_type = column_type.replaceAll("org.apache.cassandra.db.marshal.", "");
+                Schema schema = Schema.builder()
+                    .keyspace_name(r.getKeyspace_name())
+                    .table_name(r.getColumnfamily_name())
+                    .column_name(r.getColumn_name())
+                    .column_type(r.getValidator().replaceAll("org.apache.cassandra.db.marshal.", ""))
+                    .build();
 
-                putSchemaInfoInMap(schemaInfo, keyspace_name, table_name, column_name, cleaned_column_type);
+                putSchemaInfoInMap(schemaInfo,
+                        schema.getKeyspace_name(),
+                        schema.getTable_name(),
+                        schema.getColumn_name(),
+                        schema.getColumn_type());
             });
 
             cassandraConnector.close();
@@ -82,12 +88,18 @@ public class DataPortal {
 
             // fetch and store schema info
             rows.forEach(r -> {
-                String keyspace_name = r.getKeyspace_name();
-                String table_name = r.getTable_name();
-                String column_name = r.getColumn_name();
-                String column_type = r.getType();
+                Schema schema = Schema.builder()
+                    .keyspace_name(r.getKeyspace_name())
+                    .table_name(r.getTable_name())
+                    .column_name(r.getColumn_name())
+                    .column_type(r.getType())
+                    .build();
 
-                putSchemaInfoInMap(schemaInfo, keyspace_name, table_name, column_name, column_type);
+                putSchemaInfoInMap(schemaInfo,
+                        schema.getKeyspace_name(),
+                        schema.getTable_name(),
+                        schema.getColumn_name(),
+                        schema.getColumn_type());
             });
 
             cassandraConnector.close();
