@@ -37,4 +37,15 @@ class CassandraConnectorTest extends Specification {
             cassandraConnector.getSession().closed
             cassandraConnector.cluster.closed
     }
+
+    def "Should not have a session if not connected to Cassandra"() {
+        given:
+            //
+
+        when:
+            def session = cassandraConnector.getSession()
+
+        then:
+            session == null
+    }
 }
