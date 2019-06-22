@@ -1,10 +1,11 @@
 package com.industriousgnomes.tddrefactorkata.service
 
 
-import com.industriousgnomes.tddrefactorkata.cassandra.CassandraConnector
 import com.industriousgnomes.tddrefactorkata.exceptions.InvalidSourceException
+import com.industriousgnomes.tddrefactorkata.factory.SchemasFactory
 import com.industriousgnomes.tddrefactorkata.model.Schema
 import com.industriousgnomes.tddrefactorkata.mongo.MongoConnector
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -15,15 +16,16 @@ class DataPortalTest extends Specification {
 
     MongoConnector mongoConnector = Mock()
 
-    CassandraConnector cassandraConnector = Mock()
+    SchemasFactory schemasFactory = Mock()
 
     void setup() {
         dataPortal = new DataPortal(
                 mongoConnector: mongoConnector,
-                cassandraConnector: cassandraConnector
+                schemasFactory: schemasFactory
         )
     }
 
+    @Ignore("Code moved to SchemaFactory")
     def "Should throw an InvalidSourceException if unknown datasource"() {
         given:
             System.setProperty("datasource.name", "unknown");

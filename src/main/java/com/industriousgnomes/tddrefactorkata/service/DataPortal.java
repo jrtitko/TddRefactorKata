@@ -1,15 +1,6 @@
 package com.industriousgnomes.tddrefactorkata.service;
 
-import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.mapping.Mapper;
-import com.datastax.driver.mapping.MappingManager;
-import com.datastax.driver.mapping.Result;
-import com.industriousgnomes.tddrefactorkata.cassandra.CassandraConnector;
-import com.industriousgnomes.tddrefactorkata.cassandra.dto.v2.SchemaColumn;
-import com.industriousgnomes.tddrefactorkata.cassandra.dto.v3.Column;
-import com.industriousgnomes.tddrefactorkata.exceptions.InvalidSourceException;
+import com.industriousgnomes.tddrefactorkata.factory.SchemasFactory;
 import com.industriousgnomes.tddrefactorkata.model.Schema;
 import com.industriousgnomes.tddrefactorkata.mongo.MongoConnector;
 import com.mongodb.client.MongoCollection;
@@ -21,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 @Service
@@ -31,73 +21,18 @@ public class DataPortal {
     MongoConnector mongoConnector;
 
     @Autowired
-    CassandraConnector cassandraConnector;
+    SchemasFactory schemasFactory;
 
     public void copyDataOver() {
 
         // Logger
         Logger logger = LoggerFactory.getLogger(DataPortal.class);
 
-        // Pull configuration from props
-        String datasourceName = System.getProperty("datasource.name");
-        String keyspace = System.getProperty("dataportal.keyspace");
-
         // query system tables for colun keyspace/table/column info
         // we can derive keyspaces, tables, and columns from this single table
         Map<String, Map<String, Map<String, String>>> schemaInfo = new HashMap<>();
 
-        Collection<Schema> schemas = new LinkedList<>();
-        if ("cassandraV2".equals(datasourceName)) {
-            cassandraConnector.connect();
-            Session session = cassandraConnector.getSession();
-
-            MappingManager manager = new MappingManager(session);
-
-            PreparedStatement query = session.prepare("SELECT * FROM system.schema_columns WHERE keyspace_name=?");
-            ResultSet rs = session.execute(query.bind(keyspace));
-
-            Mapper<SchemaColumn> mapper = manager.mapper(SchemaColumn.class);
-            Result<SchemaColumn> rows = mapper.map(rs);
-
-            rows.forEach(r -> {
-                schemas.add(Schema.builder()
-                    .keyspaceName(r.getKeyspace_name())
-                    .tableName(r.getColumnfamily_name())
-                    .columnName(r.getColumn_name())
-                    .columnType(r.getValidator().replaceAll("org.apache.cassandra.db.marshal.", ""))
-                    .build()
-                );
-            });
-
-            cassandraConnector.close();
-
-        } else if ("cassandraV3".equals(datasourceName)) {
-            cassandraConnector.connect();
-            Session session = cassandraConnector.getSession();
-
-            MappingManager manager = new MappingManager(session);
-
-            PreparedStatement query = session.prepare("SELECT * FROM system_schema.columns WHERE keyspace_name=?");
-            ResultSet rs = session.execute(query.bind(keyspace));
-
-            Mapper<Column> mapper = manager.mapper(Column.class);
-            Result<Column> rows = mapper.map(rs);
-
-            rows.forEach(r -> {
-                schemas.add(Schema.builder()
-                    .keyspaceName(r.getKeyspace_name())
-                    .tableName(r.getTable_name())
-                    .columnName(r.getColumn_name())
-                    .columnType(r.getType())
-                                    .build()
-                );
-            });
-
-            cassandraConnector.close();
-
-        } else {
-            throw new InvalidSourceException();
-        }
+        Collection<Schema> schemas = schemasFactory.getSchemas();
 
         processSchemaInfo(schemaInfo, schemas);
 
