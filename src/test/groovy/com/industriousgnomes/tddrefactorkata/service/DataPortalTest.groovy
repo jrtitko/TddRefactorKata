@@ -33,4 +33,27 @@ class DataPortalTest extends Specification {
         then:
             thrown InvalidSourceException
     }
+
+    def "Should put schema info into the schemaInfo map"() {
+        given:
+            Map<String, Map<String, Map<String, String>>> schemaInfo = new HashMap<>()
+            String keyspaceName = "keyspaceName"
+            String tableName = "tableName"
+            String columnName = "columnName"
+            String columnType = "columnType"
+
+        when:
+            dataPortal.putSchemaInfoInMap(schemaInfo,
+                keyspaceName,
+                tableName,
+                columnName,
+                columnType
+            )
+
+        then:
+            schemaInfo.containsKey(keyspaceName)
+            schemaInfo.get(keyspaceName).containsKey(tableName)
+            schemaInfo.get(keyspaceName).get(tableName).containsKey(columnName)
+            schemaInfo.get(keyspaceName).get(tableName).get(columnName) == columnType
+    }
 }
