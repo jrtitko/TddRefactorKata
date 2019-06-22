@@ -3,6 +3,7 @@ package com.industriousgnomes.tddrefactorkata.service
 
 import com.industriousgnomes.tddrefactorkata.cassandra.CassandraConnector
 import com.industriousgnomes.tddrefactorkata.exceptions.InvalidSourceException
+import com.industriousgnomes.tddrefactorkata.model.Schema
 import com.industriousgnomes.tddrefactorkata.mongo.MongoConnector
 import spock.lang.Specification
 import spock.lang.Subject
@@ -42,13 +43,16 @@ class DataPortalTest extends Specification {
             String columnName = "columnName"
             String columnType = "columnType"
 
-        when:
-            dataPortal.putSchemaInfoInMap(schemaInfo,
-                keyspaceName,
-                tableName,
-                columnName,
-                columnType
+            Collection<Schema> schemas = Arrays.asList(
+                    new Schema(keyspaceName,
+                            tableName,
+                            columnName,
+                            columnType
+                    )
             )
+
+        when:
+            dataPortal.processSchemaInfo(schemaInfo, schemas)
 
         then:
             schemaInfo.containsKey(keyspaceName)
