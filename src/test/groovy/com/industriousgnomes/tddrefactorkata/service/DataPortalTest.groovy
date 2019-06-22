@@ -1,5 +1,6 @@
 package com.industriousgnomes.tddrefactorkata.service
 
+
 import com.industriousgnomes.tddrefactorkata.exceptions.InvalidSourceException
 import com.industriousgnomes.tddrefactorkata.factory.SchemasFactory
 import com.industriousgnomes.tddrefactorkata.model.Schema
@@ -34,7 +35,10 @@ class DataPortalTest extends Specification {
             thrown InvalidSourceException
     }
 
-    def "Should put schema info into the schemaInfo map"() {
+    def "Should copy schemas to the schemaRecorder"() {
+
+        Map<String, Map<String, Map<String, String>>> updatedSchemaInfo
+
         given:
             Map<String, Map<String, Map<String, String>>> schemaInfo = new HashMap<>()
             String keyspaceName = "keyspaceName"
@@ -50,13 +54,16 @@ class DataPortalTest extends Specification {
                     )
             )
 
+            schemasFactory.getSchemas() >> schemas
+
         when:
-            dataPortal.processSchemaInfo(schemaInfo, schemas)
+            dataPortal.copyDataOver()
 
         then:
-            schemaInfo.containsKey(keyspaceName)
-            schemaInfo.get(keyspaceName).containsKey(tableName)
-            schemaInfo.get(keyspaceName).get(tableName).containsKey(columnName)
-            schemaInfo.get(keyspaceName).get(tableName).get(columnName) == columnType
+            1 * schemaRecorder.recordSchema(_) >> {args -> updatedSchemaInfo = args[0] }
+            updatedSchemaInfo.containsKey(keyspaceName)
+            updatedSchemaInfo.get(keyspaceName).containsKey(tableName)
+            updatedSchemaInfo.get(keyspaceName).get(tableName).containsKey(columnName)
+            updatedSchemaInfo.get(keyspaceName).get(tableName).get(columnName) == columnType
     }
 }
