@@ -35,9 +35,9 @@ public class DataPortal {
         String keyspace = System.getProperty("dataportal.keyspace");
 
         // Setup Cassandra Connection
-        CassandraConnector connector = new CassandraConnector();
-        connector.connect();
-        Session session = connector.getSession();
+        CassandraConnector cassandraConnector = new CassandraConnector();
+        cassandraConnector.connect();
+        Session session = cassandraConnector.getSession();
 
         MappingManager manager = new MappingManager(session);
 
@@ -93,7 +93,7 @@ public class DataPortal {
             System.exit(1);
         }
 
-        connector.close();
+        cassandraConnector.close();
 
 
         try {
