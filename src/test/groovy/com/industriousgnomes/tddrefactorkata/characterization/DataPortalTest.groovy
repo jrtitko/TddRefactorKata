@@ -67,7 +67,7 @@ class DataPortalTest extends Specification {
             System.setProperty("cassandra.port", "9043");
             System.setProperty("cassandra.user", "someuser");
             System.setProperty("cassandra.password", "somepassword");
-            System.setProperty("cassandra.column_table", "system.schema_columns");
+            System.setProperty("datasource.name", "system.schema_columns");
 
             System.setProperty("dataportal.keyspace", "system_auth")
 
@@ -89,7 +89,7 @@ class DataPortalTest extends Specification {
             System.setProperty("cassandra.port", "9042");
             System.setProperty("cassandra.user", "someuser");
             System.setProperty("cassandra.password", "somepassword");
-            System.setProperty("cassandra.column_table", "system_schema.columns");
+            System.setProperty("datasource.name", "system_schema.columns");
 
             System.setProperty("dataportal.keyspace", "system_auth")
 

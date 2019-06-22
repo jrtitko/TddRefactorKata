@@ -35,7 +35,7 @@ public class DataPortal {
         Logger logger = LoggerFactory.getLogger(DataPortal.class);
 
         // Pull configuration from props
-        String cassandra_column_table = System.getProperty("cassandra.column_table");
+        String datasourceName = System.getProperty("datasource.name");
         String keyspace = System.getProperty("dataportal.keyspace");
 
         // query system tables for colun keyspace/table/column info
@@ -43,7 +43,7 @@ public class DataPortal {
         HashMap<String, HashMap> schemaInfo = new HashMap<String, HashMap>();
 
         // query for 2.x hosts
-        if (cassandra_column_table.equals("system.schema_columns")) {
+        if (datasourceName.equals("system.schema_columns")) {
             cassandraConnector.connect();
             Session session = cassandraConnector.getSession();
 
@@ -73,7 +73,7 @@ public class DataPortal {
 
             cassandraConnector.close();
 
-        } else if (cassandra_column_table.equals("system_schema.columns")) {    // query for 3.x hosts
+        } else if (datasourceName.equals("system_schema.columns")) {    // query for 3.x hosts
             cassandraConnector.connect();
             Session session = cassandraConnector.getSession();
 

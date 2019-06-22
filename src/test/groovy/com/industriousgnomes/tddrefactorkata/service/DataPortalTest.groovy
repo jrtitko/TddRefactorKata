@@ -25,7 +25,7 @@ class DataPortalTest extends Specification {
 
     def "Should throw an InvalidSourceException if unknown datasource"() {
         given:
-            System.setProperty("cassandra.column_table", "unknown");
+            System.setProperty("datasource.name", "unknown");
 
         when:
             dataPortal.copyDataOver()
