@@ -6,6 +6,7 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
 import com.datastax.driver.mapping.Result;
+import com.industriousgnomes.tddrefactorkata.exceptions.InvalidSourceException;
 import com.industriousgnomes.tddrefactorkata.cassandra.CassandraConnector;
 import com.industriousgnomes.tddrefactorkata.cassandra.dto.v2.SchemaColumn;
 import com.industriousgnomes.tddrefactorkata.cassandra.dto.v3.Column;
@@ -102,7 +103,7 @@ public class DataPortal {
             cassandraConnector.close();
 
         } else {
-            System.exit(1);
+            throw new InvalidSourceException();
         }
 
         try {
