@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class DataPortal {
@@ -40,7 +41,7 @@ public class DataPortal {
 
         // query system tables for colun keyspace/table/column info
         // we can derive keyspaces, tables, and columns from this single table
-        HashMap<String, HashMap> schemaInfo = new HashMap<String, HashMap>();
+        Map<String, Map<String, Map<String, String>>> schemaInfo = new HashMap<>();
 
         if ("cassandraV2".equals(datasourceName)) {
             cassandraConnector.connect();
@@ -62,10 +63,10 @@ public class DataPortal {
                 String column_type = r.getValidator();
 
                 //create structures for keyspace and table if required
-                schemaInfo.putIfAbsent(keyspace_name, new HashMap<String, HashMap>());
-                HashMap<String, HashMap<String, String>> keyspace_map = schemaInfo.get(keyspace_name);
-                keyspace_map.putIfAbsent(table_name, new HashMap<String, String>());
-                HashMap<String, String> table_map = keyspace_map.get(table_name);
+                schemaInfo.putIfAbsent(keyspace_name, new HashMap<>());
+                Map<String, Map<String, String>> keyspace_map = schemaInfo.get(keyspace_name);
+                keyspace_map.putIfAbsent(table_name, new HashMap<>());
+                Map<String, String> table_map = keyspace_map.get(table_name);
                 String cleaned_column_type = column_type.replaceAll("org.apache.cassandra.db.marshal.", "");
                 table_map.put(column_name, cleaned_column_type);
             });
@@ -92,10 +93,10 @@ public class DataPortal {
                 String column_type = r.getType();
 
                 //create structures for keyspace and table if required
-                schemaInfo.putIfAbsent(keyspace_name, new HashMap<String, HashMap>());
-                HashMap<String, HashMap<String, String>> keyspace_map = schemaInfo.get(keyspace_name);
-                keyspace_map.putIfAbsent(table_name, new HashMap<String, String>());
-                HashMap<String, String> table_map = keyspace_map.get(table_name);
+                schemaInfo.putIfAbsent(keyspace_name, new HashMap<>());
+                Map<String, Map<String, String>> keyspace_map = schemaInfo.get(keyspace_name);
+                keyspace_map.putIfAbsent(table_name, new HashMap<>());
+                Map<String, String> table_map = keyspace_map.get(table_name);
                 table_map.put(column_name, column_type);
             });
 
@@ -110,14 +111,14 @@ public class DataPortal {
             MongoCollection<Document> collection = mongoConnector.getCollection("schemaData");
             collection.drop();
 
-            for (HashMap.Entry<String, HashMap> keyspace_entry : schemaInfo.entrySet()) {
+            for (Map.Entry<String, Map<String, Map<String, String>>> keyspace_entry : schemaInfo.entrySet()) {
                 Document documentKeyspace = new Document();
 
-                HashMap<String, HashMap> tables = keyspace_entry.getValue();
+                Map<String, Map<String, String>> tables = keyspace_entry.getValue();
                 Document documentTables = new Document();
-                for (HashMap.Entry<String, HashMap> table_entry : tables.entrySet()) {
+                for (Map.Entry<String, Map<String, String>> table_entry : tables.entrySet()) {
 
-                    HashMap<String, String> columns = table_entry.getValue();
+                    Map<String, String> columns = table_entry.getValue();
                     Document documentColumns = new Document();
                     for (HashMap.Entry<String, String> column_entry: columns.entrySet()) {
                         documentColumns.append(column_entry.getKey(), column_entry.getValue());
