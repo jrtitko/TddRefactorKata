@@ -3,6 +3,7 @@ package com.industriousgnomes.tddrefactorkata.characterization
 import com.industriousgnomes.tddrefactorkata.cassandra.CassandraConnector
 import com.industriousgnomes.tddrefactorkata.factory.SchemasFactory
 import com.industriousgnomes.tddrefactorkata.mongo.MongoConnector
+import com.industriousgnomes.tddrefactorkata.mongo.SchemaRecorder
 import com.industriousgnomes.tddrefactorkata.service.DataPortal
 import com.mongodb.MongoClient
 import com.mongodb.MongoCredential
@@ -34,6 +35,8 @@ class DataPortalTest extends Specification {
 
     SchemasFactory schemasFactory
 
+    SchemaRecorder schemaRecorder
+
     def setupSpec() {
         MongoClient mongo = new MongoClient("localhost", 27017)
         MongoCredential.createCredential("sampleUser", "myDb", "password".toCharArray())
@@ -62,8 +65,12 @@ class DataPortalTest extends Specification {
                 cassandraConnector: cassandraConnector
         )
 
+        schemaRecorder = new SchemaRecorder(
+                mongoConnector: mongoConnector
+        )
+
         dataPortal = new DataPortal(
-                mongoConnector: mongoConnector,
+                schemaRecorder: schemaRecorder,
                 schemasFactory: schemasFactory
         )
     }

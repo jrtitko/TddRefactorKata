@@ -1,10 +1,9 @@
 package com.industriousgnomes.tddrefactorkata.service
 
-
 import com.industriousgnomes.tddrefactorkata.exceptions.InvalidSourceException
 import com.industriousgnomes.tddrefactorkata.factory.SchemasFactory
 import com.industriousgnomes.tddrefactorkata.model.Schema
-import com.industriousgnomes.tddrefactorkata.mongo.MongoConnector
+import com.industriousgnomes.tddrefactorkata.mongo.SchemaRecorder
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -13,13 +12,13 @@ class DataPortalTest extends Specification {
     @Subject
     DataPortal dataPortal
 
-    MongoConnector mongoConnector = Mock()
+    SchemaRecorder schemaRecorder = Mock()
 
     SchemasFactory schemasFactory = Mock()
 
     void setup() {
         dataPortal = new DataPortal(
-                mongoConnector: mongoConnector,
+                schemaRecorder: schemaRecorder,
                 schemasFactory: schemasFactory
         )
     }
