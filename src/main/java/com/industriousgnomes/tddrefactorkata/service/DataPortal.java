@@ -6,7 +6,8 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
 import com.datastax.driver.mapping.Result;
-import com.datastax.driver.mapping.annotations.Table;
+import com.industriousgnomes.tddrefactorkata.cassandra.dto.v2.SchemaColumn;
+import com.industriousgnomes.tddrefactorkata.cassandra.dto.v3.Column;
 import com.industriousgnomes.tddrefactorkata.mongo.MongoConnector;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
@@ -129,28 +130,3 @@ public class DataPortal {
     }
 }
 
-// Cassandra V2
-@Table(keyspace = "system", name = "schema_columns")
-class SchemaColumn {
-    private String keyspace_name;
-    private String columnfamily_name;
-    private String column_name;
-    private String validator;
-    public String getKeyspace_name() { return this.keyspace_name; }
-    public String getColumnfamily_name() { return this.columnfamily_name; }
-    public String getColumn_name() { return this.column_name; }
-    public String getValidator() { return this.validator; }
-}
-
-// Cassandra v3
-@Table(keyspace = "system_schema", name = "columns")
-class Column {
-    private String keyspace_name;
-    private String table_name;
-    private String column_name;
-    private String type;
-    public String getKeyspace_name() { return this.keyspace_name; }
-    public String getTable_name() { return this.table_name; }
-    public String getColumn_name() { return this.column_name; }
-    public String getType() { return this.type; }
-}
