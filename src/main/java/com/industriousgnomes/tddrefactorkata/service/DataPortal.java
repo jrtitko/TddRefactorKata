@@ -37,18 +37,17 @@ public class DataPortal {
         String cassandra_column_table = System.getProperty("cassandra.column_table");
         String keyspace = System.getProperty("dataportal.keyspace");
 
-        // Setup Cassandra Connection
-        cassandraConnector.connect();
-        Session session = cassandraConnector.getSession();
-
-        MappingManager manager = new MappingManager(session);
-
         // query system tables for colun keyspace/table/column info
         // we can derive keyspaces, tables, and columns from this single table
         HashMap<String, HashMap> schemaInfo = new HashMap<String, HashMap>();
 
         // query for 2.x hosts
         if (cassandra_column_table.equals("system.schema_columns")) {
+            cassandraConnector.connect();
+            Session session = cassandraConnector.getSession();
+
+            MappingManager manager = new MappingManager(session);
+
             PreparedStatement query = session.prepare("SELECT * FROM system.schema_columns WHERE keyspace_name=?");
             ResultSet rs = session.execute(query.bind(keyspace));
 
@@ -70,7 +69,15 @@ public class DataPortal {
                 String cleaned_column_type = column_type.replaceAll("org.apache.cassandra.db.marshal.", "");
                 table_map.put(column_name, cleaned_column_type);
             });
+
+            cassandraConnector.close();
+
         } else if (cassandra_column_table.equals("system_schema.columns")) {    // query for 3.x hosts
+            cassandraConnector.connect();
+            Session session = cassandraConnector.getSession();
+
+            MappingManager manager = new MappingManager(session);
+
             PreparedStatement query = session.prepare("SELECT * FROM system_schema.columns WHERE keyspace_name=?");
             ResultSet rs = session.execute(query.bind(keyspace));
 
@@ -91,12 +98,12 @@ public class DataPortal {
                 HashMap<String, String> table_map = keyspace_map.get(table_name);
                 table_map.put(column_name, column_type);
             });
+
+            cassandraConnector.close();
+
         } else {
             System.exit(1);
         }
-
-        cassandraConnector.close();
-
 
         try {
             mongoConnector.connect();
