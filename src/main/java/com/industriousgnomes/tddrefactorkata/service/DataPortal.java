@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 @Service
@@ -136,20 +135,10 @@ class SchemaColumn {
     private String keyspace_name;
     private String columnfamily_name;
     private String column_name;
-    private int component_index;
-    private String index_name;
-    private String index_options;
-    private String index_type;
-    private String type;
     private String validator;
     public String getKeyspace_name() { return this.keyspace_name; }
     public String getColumnfamily_name() { return this.columnfamily_name; }
     public String getColumn_name() { return this.column_name; }
-    public int getComponent_index() { return this.component_index; }
-    public String getIndex_name() { return this.index_name; }
-    public String getIndex_options() { return this.index_options; }
-    public String getIndex_type() { return this.index_type; }
-    public String getType() { return this.type; }
     public String getValidator() { return this.validator; }
 }
 
@@ -159,17 +148,9 @@ class Column {
     private String keyspace_name;
     private String table_name;
     private String column_name;
-    private String clustering_order;
-    private ByteBuffer column_name_bytes;
-    private String kind;
-    private int position;
     private String type;
     public String getKeyspace_name() { return this.keyspace_name; }
     public String getTable_name() { return this.table_name; }
     public String getColumn_name() { return this.column_name; }
-    public String getClustering_order() { return this.clustering_order; }
-    public ByteBuffer getColumn_name_bytes() { return this.column_name_bytes; }
-    public String getKind() { return this.kind; }
-    public int getPosition() { return this.position; }
     public String getType() { return this.type; }
 }
