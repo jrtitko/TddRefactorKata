@@ -31,16 +31,12 @@ public class DataPortal {
         Logger logger = LoggerFactory.getLogger(DataPortal.class);
 
         // Pull configuration from props
-        String endpoint = System.getProperty("cassandra.cluster");
-        Integer port = Integer.getInteger("cassandra.port", 9042);
-        String username = System.getProperty("cassandra.user");
-        String password = System.getProperty("cassandra.password");
         String cassandra_column_table = System.getProperty("cassandra.column_table");
         String keyspace = System.getProperty("dataportal.keyspace");
 
         // Setup Cassandra Connection
         CassandraConnector connector = new CassandraConnector();
-        connector.connect(endpoint, port, username, password);
+        connector.connect();
         Session session = connector.getSession();
 
         MappingManager manager = new MappingManager(session);
