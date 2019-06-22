@@ -19,7 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 @Service
@@ -56,15 +58,18 @@ public class DataPortal {
             Mapper<SchemaColumn> mapper = manager.mapper(SchemaColumn.class);
             Result<SchemaColumn> rows = mapper.map(rs);
 
-            // fetch and store schema info
+            Collection<Schema> schemas = new LinkedList<>();
             rows.forEach(r -> {
-                Schema schema = Schema.builder()
+                schemas.add(Schema.builder()
                     .keyspaceName(r.getKeyspace_name())
                     .tableName(r.getColumnfamily_name())
                     .columnName(r.getColumn_name())
                     .columnType(r.getValidator().replaceAll("org.apache.cassandra.db.marshal.", ""))
-                    .build();
+                    .build()
+                );
+            });
 
+            schemas.forEach(schema -> {
                 putSchemaInfoInMap(schemaInfo,
                         schema.getKeyspaceName(),
                         schema.getTableName(),
@@ -86,15 +91,18 @@ public class DataPortal {
             Mapper<Column> mapper = manager.mapper(Column.class);
             Result<Column> rows = mapper.map(rs);
 
-            // fetch and store schema info
+            Collection<Schema> schemas = new LinkedList<>();
             rows.forEach(r -> {
-                Schema schema = Schema.builder()
+                schemas.add(Schema.builder()
                     .keyspaceName(r.getKeyspace_name())
                     .tableName(r.getTable_name())
                     .columnName(r.getColumn_name())
                     .columnType(r.getType())
-                    .build();
+                                    .build()
+                );
+            });
 
+            schemas.forEach(schema -> {
                 putSchemaInfoInMap(schemaInfo,
                         schema.getKeyspaceName(),
                         schema.getTableName(),
