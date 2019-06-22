@@ -173,15 +173,3 @@ class Column {
     public int getPosition() { return this.position; }
     public String getType() { return this.type; }
 }
-
-@Table(keyspace = "system", name = "schema_keyspaces")
-class SchemaKeyspace {
-    private String keyspace_name;
-    private Boolean durable_writes;
-    private String strategy_class;
-    private String strategy_options;
-    public String getKeyspace_name() { return this.keyspace_name; };
-    public Boolean getDurable_writes() { return this.durable_writes; };
-    public String getStrategy_class() { return this.strategy_class; };
-    public String getStrategy_options() { return this.strategy_options; };
-}
