@@ -46,6 +46,7 @@ public class DataPortal {
         // we can derive keyspaces, tables, and columns from this single table
         Map<String, Map<String, Map<String, String>>> schemaInfo = new HashMap<>();
 
+        Collection<Schema> schemas = new LinkedList<>();
         if ("cassandraV2".equals(datasourceName)) {
             cassandraConnector.connect();
             Session session = cassandraConnector.getSession();
@@ -58,7 +59,6 @@ public class DataPortal {
             Mapper<SchemaColumn> mapper = manager.mapper(SchemaColumn.class);
             Result<SchemaColumn> rows = mapper.map(rs);
 
-            Collection<Schema> schemas = new LinkedList<>();
             rows.forEach(r -> {
                 schemas.add(Schema.builder()
                     .keyspaceName(r.getKeyspace_name())
@@ -68,8 +68,6 @@ public class DataPortal {
                     .build()
                 );
             });
-
-            processSchemaInfo(schemaInfo, schemas);
 
             cassandraConnector.close();
 
@@ -85,7 +83,6 @@ public class DataPortal {
             Mapper<Column> mapper = manager.mapper(Column.class);
             Result<Column> rows = mapper.map(rs);
 
-            Collection<Schema> schemas = new LinkedList<>();
             rows.forEach(r -> {
                 schemas.add(Schema.builder()
                     .keyspaceName(r.getKeyspace_name())
@@ -96,13 +93,13 @@ public class DataPortal {
                 );
             });
 
-            processSchemaInfo(schemaInfo, schemas);
-
             cassandraConnector.close();
 
         } else {
             throw new InvalidSourceException();
         }
+
+        processSchemaInfo(schemaInfo, schemas);
 
         try {
             mongoConnector.connect();
