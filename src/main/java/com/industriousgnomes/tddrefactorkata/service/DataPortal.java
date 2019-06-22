@@ -69,13 +69,7 @@ public class DataPortal {
                 );
             });
 
-            schemas.forEach(schema -> {
-                putSchemaInfoInMap(schemaInfo,
-                        schema.getKeyspaceName(),
-                        schema.getTableName(),
-                        schema.getColumnName(),
-                        schema.getColumnType());
-            });
+            processSchemaInfo(schemaInfo, schemas);
 
             cassandraConnector.close();
 
@@ -102,13 +96,7 @@ public class DataPortal {
                 );
             });
 
-            schemas.forEach(schema -> {
-                putSchemaInfoInMap(schemaInfo,
-                        schema.getKeyspaceName(),
-                        schema.getTableName(),
-                        schema.getColumnName(),
-                        schema.getColumnType());
-            });
+            processSchemaInfo(schemaInfo, schemas);
 
             cassandraConnector.close();
 
@@ -144,6 +132,16 @@ public class DataPortal {
         } catch (Exception e) {
             logger.error(e.toString());
         }
+    }
+
+    private void processSchemaInfo(Map<String, Map<String, Map<String, String>>> schemaInfo, Collection<Schema> schemas) {
+        schemas.forEach(schema -> {
+            putSchemaInfoInMap(schemaInfo,
+                    schema.getKeyspaceName(),
+                    schema.getTableName(),
+                    schema.getColumnName(),
+                    schema.getColumnType());
+        });
     }
 
     private void putSchemaInfoInMap(Map<String, Map<String, Map<String, String>>> schemaInfo, String keyspaceName, String tableName, String columnName, String columnType) {
